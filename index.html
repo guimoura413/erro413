@@ -7,7 +7,6 @@
 <style>html,body{margin:0;padding:0;background:#04080f;}</style>
 </head>
 <body>
-<div style="position:fixed; bottom:6px; right:8px; color:#333; font-size:9px; font-family:monospace; z-index:9999999;">build-04</div>
 <div id="portaoGui" style="font-family: sans-serif;">
 
 <style>
@@ -24,7 +23,7 @@
   #portaoGui h1.erro-titulo { font-size:34px; margin:10px 0; letter-spacing:2px; }
   #portaoGui p.erro-sub { color:#94a3b8; font-size:13px; max-width:320px; margin:0 auto 30px; }
 
-  #portaoGui .cena-combinada { width:90vw; max-width:480px; margin: 0 auto 20px; display:block; }
+  #portaoGui .cena-combinada { width:100%; max-width:420px; margin: 0 auto 20px; display:block; }
   #portaoGui .robo { transform-box: fill-box; transform-origin: center; animation: tremeRobo 2.5s infinite ease-in-out; }
   @keyframes tremeRobo { 0%,100%{transform:rotate(0deg);} 25%{transform:rotate(-2deg);} 75%{transform:rotate(2deg);} }
 
@@ -189,7 +188,7 @@
 </div>
 
 <!-- TELA 6: quiz -->
-<div class="tela" id="tela-quiz" style="position:relative;">
+<div class="tela" id="tela-quiz">
   <div class="vidas-wrap" id="vidasWrap"></div>
   <div class="legenda-pergunta" id="legendaPergunta"></div>
   <div class="texto-pergunta" id="textoPergunta"></div>
