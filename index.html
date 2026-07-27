@@ -1,3 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Erro_413</title>
+<style>html,body{margin:0;padding:0;background:#04080f;}</style>
+</head>
+<body>
+<div id="detectorErro" style="display:none; position:fixed; top:0; left:0; width:100%; background:#ff0000; color:#fff; font-size:11px; padding:8px; z-index:9999999; font-family:monospace; word-break:break-all;"></div>
+<script>
+  window.onerror = function(msg, url, linha, coluna, erro){
+    var d = document.getElementById('detectorErro');
+    d.style.display = 'block';
+    d.innerHTML = 'ERRO: ' + msg + ' (linha ' + linha + ', coluna ' + coluna + ')';
+  };
+</script>
 <div id="portaoGui" style="font-family: sans-serif;">
 
 <style>
@@ -389,31 +406,4 @@
       document.getElementById('btnProximo').classList.add('mostrar');
     } else {
       btn.classList.add('errado');
-      btn.classList.add('travado');
-      vidas--;
-      renderVidas();
-      if(vidas === 1 && !bonusUsado){
-        bonusUsado = true;
-        setTimeout(iniciarBonus, 700);
-      } else if(vidas === 0){
-        setTimeout(fimDeCiclo, 700);
-      }
-    }
-  }
-
-  window.proximaPergunta = function(){
-    perguntaAtual++;
-    if(perguntaAtual < perguntas.length){
-      renderPergunta();
-    } else {
-      trocarTela('tela-quiz', 'tela-senha');
-      senhaTentativas = 3;
-    }
-  };
-
-  function fimDeCiclo(){
-    var telaAtiva = document.querySelector('#portaoGui .tela.ativa').id;
-    var ciclos = parseInt(localStorage.getItem('gui_ciclosFalhos') || "0") + 1;
-    localStorage.setItem('gui_ciclosFalhos', ciclos);
-    if(ciclos >= 3){
-      localStorage.setItem('gui_
+      btn.classList.ad
