@@ -1,0 +1,419 @@
+<div id="portaoGui" style="font-family: sans-serif;">
+
+<style>
+  #portaoGui .tela {
+    display: none;
+    position: fixed; top:0; left:0; width:100vw; height:100vh;
+    background:#04080f; color:#fff;
+    flex-direction: column; align-items:center; justify-content:center;
+    text-align:center; padding:20px; box-sizing:border-box; z-index:999999;
+  }
+  #portaoGui .tela.ativa { display:flex; }
+
+  #portaoGui .logo404 { font-size:15px; letter-spacing:4px; color:#54a0ff; margin-bottom:6px; }
+  #portaoGui h1.erro-titulo { font-size:34px; margin:10px 0; letter-spacing:2px; }
+  #portaoGui p.erro-sub { color:#94a3b8; font-size:13px; max-width:320px; margin:0 auto 30px; }
+
+  #portaoGui .cena-combinada { width:100%; max-width:320px; margin: 0 auto 20px; display:block; }
+  #portaoGui .robo { transform-box: fill-box; transform-origin: center; animation: tremeRobo 2.5s infinite ease-in-out; }
+  @keyframes tremeRobo { 0%,100%{transform:rotate(0deg);} 25%{transform:rotate(-2deg);} 75%{transform:rotate(2deg);} }
+
+  #portaoGui .elemento-normal { transition: opacity 3s ease; opacity:1; }
+  #portaoGui .elemento-normal.apagado { opacity:0.35; }
+
+  #portaoGui .nuvemNeon {
+    cursor:pointer;
+    transform-box: fill-box; transform-origin: center;
+    filter: drop-shadow(0 0 0px #54a0ff);
+    transition: filter 3s ease;
+  }
+  #portaoGui .nuvemNeon path {
+    stroke:#2a3446;
+    transition: stroke 3s ease;
+  }
+  #portaoGui .nuvemNeon.acordada path { stroke:#ffffff; }
+  #portaoGui .nuvemNeon.acordada { filter: drop-shadow(0 0 14px #ffffff) drop-shadow(0 0 26px #54a0ff); }
+
+  #portaoGui .dica-nuvem {
+    font-size:22px; color:#2a3446; letter-spacing:2px; margin-top:14px; font-weight:bold;
+    transition: color 3s ease;
+  }
+  #portaoGui .dica-nuvem.acordada { color:#94a3b8; }
+
+  #portaoGui .captcha-svg-wrap { background:linear-gradient(160deg,#3d8bfd,#1e5fbf); border-radius:12px; padding:14px; margin-bottom:22px; }
+  #portaoGui .letra-captcha { font-family: 'Comic Sans MS', 'Segoe UI', cursive, sans-serif; font-weight:900; }
+  #portaoGui input.campo-gui {
+    background:#0d1b2a; border:1px solid #54a0ff; color:#fff; border-radius:8px;
+    padding:12px 16px; font-size:15px; text-align:center; width:220px; margin-bottom:14px;
+  }
+  #portaoGui button.botao-gui {
+    background:#54a0ff; color:#04080f; border:none; border-radius:30px;
+    padding:12px 28px; font-weight:bold; font-size:14px; cursor:pointer;
+  }
+  #portaoGui .msg-erro-campo { color:#ff6b6b; font-size:12px; margin-top:10px; min-height:16px; }
+
+  #portaoGui .titulo-quiz { font-size:30px; margin:0 0 8px; letter-spacing:1px; }
+  #portaoGui .sub-quiz { color:#94a3b8; font-size:14px; max-width:300px; margin:0 auto 30px; font-style:italic; }
+
+  #portaoGui .vidas-wrap { position:absolute; top:18px; left:18px; display:flex; gap:6px; }
+  #portaoGui .coracao { width:22px; height:22px; opacity:1; transition:opacity .4s ease, transform .4s ease; }
+  #portaoGui .coracao.perdido { opacity:0.18; transform:scale(0.85); }
+
+  #portaoGui .legenda-pergunta { color:#ffcc00; font-size:11px; letter-spacing:1px; margin-bottom:10px; text-transform:uppercase; }
+  #portaoGui .texto-pergunta { font-size:19px; max-width:320px; margin:0 auto 26px; line-height:1.5; }
+
+  #portaoGui .opcoes-wrap { display:flex; flex-direction:column; gap:12px; width:280px; max-width:85vw; }
+  #portaoGui .opcao-btn {
+    background:#0d1b2a; border:1px solid #54a0ff; color:#fff; border-radius:12px;
+    padding:14px 16px; font-size:14px; cursor:pointer; text-align:left; transition:.25s;
+  }
+  #portaoGui .opcao-btn.certo { background:#1dd1a1; border-color:#1dd1a1; color:#04080f; font-weight:bold; }
+  #portaoGui .opcao-btn.errado { background:#3a1414; border-color:#ff6b6b; color:#ff9a9a; }
+  #portaoGui .opcao-btn.travado { opacity:0.5; pointer-events:none; }
+
+  #portaoGui .btn-proximo {
+    margin-top:20px; background:#54a0ff; color:#04080f; border:none; border-radius:30px;
+    padding:12px 30px; font-weight:bold; font-size:14px; cursor:pointer; display:none;
+  }
+  #portaoGui .btn-proximo.mostrar { display:inline-block; }
+
+  #portaoGui .nuvem-bonus { width:56px; cursor:pointer; margin:8px; transition: filter .3s ease; }
+  #portaoGui .nuvem-bonus path { stroke:#54a0ff; transition: fill .3s ease; }
+  #portaoGui .nuvem-bonus.piscando path { fill:#ffd700; stroke:#ffd700; }
+  #portaoGui .bonus-clouds { display:flex; justify-content:center; margin:20px 0; }
+
+  #portaoGui textarea.campo-msg {
+    background:#0d1b2a; border:1px solid #54a0ff; color:#fff; border-radius:12px;
+    padding:14px; font-size:14px; width:280px; max-width:85vw; height:120px; margin-bottom:16px;
+    font-family:inherit;
+  }
+</style>
+
+<!-- TELA 1: erro falso -->
+<div class="tela ativa" id="tela-erro">
+  <svg class="cena-combinada" viewBox="0 0 300 220" fill="none">
+    <!-- chão -->
+    <path d="M10,195 Q80,188 150,195 T290,195" stroke="#1b2a3d" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- sol -->
+    <g class="elemento-normal" id="solGui">
+      <circle cx="45" cy="45" r="16" fill="#ffb144" stroke="#ffb144" stroke-width="2"/>
+      <line x1="45" y1="15" x2="45" y2="4" stroke="#ffb144" stroke-width="3" stroke-linecap="round"/>
+      <line x1="45" y1="75" x2="45" y2="86" stroke="#ffb144" stroke-width="3" stroke-linecap="round"/>
+      <line x1="15" y1="45" x2="4" y2="45" stroke="#ffb144" stroke-width="3" stroke-linecap="round"/>
+      <line x1="75" y1="45" x2="86" y2="45" stroke="#ffb144" stroke-width="3" stroke-linecap="round"/>
+      <line x1="24" y1="24" x2="16" y2="16" stroke="#ffb144" stroke-width="3" stroke-linecap="round"/>
+      <line x1="66" y1="24" x2="74" y2="16" stroke="#ffb144" stroke-width="3" stroke-linecap="round"/>
+      <line x1="24" y1="66" x2="16" y2="74" stroke="#ffb144" stroke-width="3" stroke-linecap="round"/>
+      <line x1="66" y1="66" x2="74" y2="74" stroke="#ffb144" stroke-width="3" stroke-linecap="round"/>
+    </g>
+
+    <!-- robô centralizado -->
+    <g class="elemento-normal" id="roboGui" transform="translate(102,55) scale(0.95)">
+    <g class="robo">
+      <line x1="50" y1="8" x2="44" y2="20" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="50" cy="8" r="3" fill="#54a0ff"/>
+      <rect x="30" y="20" width="40" height="28" rx="6" stroke="#54a0ff" stroke-width="2.5"/>
+      <line x1="38" y1="30" x2="46" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="46" y1="30" x2="38" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="54" y1="30" x2="62" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="62" y1="30" x2="54" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
+      <rect x="26" y="52" width="48" height="36" rx="6" stroke="#54a0ff" stroke-width="2.5"/>
+      <line x1="34" y1="62" x2="66" y2="62" stroke="#54a0ff" stroke-width="2"/>
+      <line x1="34" y1="72" x2="58" y2="72" stroke="#54a0ff" stroke-width="2"/>
+      <line x1="20" y1="95" x2="34" y2="80" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="40" y1="88" x2="38" y2="104" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="60" y1="88" x2="62" y2="104" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="78" cy="100" r="3" stroke="#54a0ff" stroke-width="2"/>
+    </g>
+    </g>
+
+    <!-- nuvem, perto do robô, na mesma cena -->
+    <g class="nuvemNeon" id="nuvemGatilho" transform="translate(200,20) scale(1.35)">
+      <defs>
+        <linearGradient id="sombraNuvem" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#000" stop-opacity="0.35"/>
+          <stop offset="45%" stop-color="#000" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="M20,50 A12,12 0 0 1 32,38 A15,15 0 0 1 50,25 A15,15 0 0 1 68,38 A12,12 0 0 1 80,50 Z"
+        stroke-width="2.5"/>
+      <path d="M20,50 A12,12 0 0 1 32,38 A15,15 0 0 1 50,25 A15,15 0 0 1 68,38 A12,12 0 0 1 80,50 Z"
+        fill="url(#sombraNuvem)" stroke="none"/>
+    </g>
+  </svg>
+  <div class="logo404">OPS...</div>
+  <h1 class="erro-titulo">Erro_413</h1>
+  <p class="erro-sub">A página que você tentou acessar não existe ou foi movida. Verifique o link e tente novamente.</p>
+  <div class="dica-nuvem" id="dicaNuvem">. . .</div>
+</div>
+
+<!-- TELA 2: captcha -->
+<div class="tela" id="tela-captcha">
+  <p class="erro-sub" style="margin-bottom:16px;">Confirme que você não é um robô. Digite exatamente o que você vê na imagem:</p>
+  <div class="captcha-svg-wrap">
+    <svg id="captchaSvg" viewBox="0 0 260 90" width="260" height="90" style="max-width:80vw; display:block;"></svg>
+  </div>
+  <input type="text" class="campo-gui" id="campoCaptcha" placeholder="Digite aqui" autocomplete="off">
+  <br>
+  <button class="botao-gui" onclick="conferirCaptcha()">Confirmar</button>
+  <div class="msg-erro-campo" id="msgCaptcha"></div>
+</div>
+
+<!-- TELA 3: título -->
+<div class="tela" id="tela-titulo">
+  <h1 class="titulo-quiz">Gui Moura Quiz</h1>
+  <p class="sub-quiz">Não é só um quiz. É um desafio que esconde um segredo — e o final vai te surpreender.</p>
+  <button class="botao-gui" onclick="tentarJogar()">Jogar</button>
+</div>
+
+<!-- TELA 4: bloqueado -->
+<div class="tela" id="tela-bloqueada">
+  <h1 class="titulo-quiz" style="font-size:22px;">Muitas tentativas...</h1>
+  <p class="sub-quiz">Parece que ainda não é a sua vez. Volte a tentar em cerca de 30 minutos.</p>
+</div>
+
+<!-- TELA 5: game over de um ciclo -->
+<div class="tela" id="tela-gameover">
+  <h1 class="titulo-quiz" style="font-size:22px;">Fim. Recomeçar?</h1>
+  <p class="sub-quiz">Você não conseguiu dessa vez.</p>
+  <button class="botao-gui" onclick="tentarJogar()">Tentar novamente</button>
+</div>
+
+<!-- TELA 6: quiz -->
+<div class="tela" id="tela-quiz" style="position:relative;">
+  <div class="vidas-wrap" id="vidasWrap"></div>
+  <div class="legenda-pergunta" id="legendaPergunta"></div>
+  <div class="texto-pergunta" id="textoPergunta"></div>
+  <div class="opcoes-wrap" id="opcoesWrap"></div>
+  <button class="btn-proximo" id="btnProximo" onclick="proximaPergunta()">Próximo</button>
+</div>
+
+<!-- TELA 7: bônus da nuvem -->
+<div class="tela" id="tela-bonus">
+  <h1 class="titulo-quiz" style="font-size:20px;">Chance extra!</h1>
+  <p class="sub-quiz" id="instrucaoBonus">Observe a ordem que as nuvens piscam e repita, tocando nelas na mesma sequência.</p>
+  <div class="bonus-clouds" id="bonusClouds"></div>
+</div>
+
+<!-- TELA 8: senha -->
+<div class="tela" id="tela-senha">
+  <h1 class="titulo-quiz" style="font-size:22px;">Você está muito perto!</h1>
+  <p class="sub-quiz">Mas ainda não acabou... Caro conhecedor do Guilherme, qual é a senha?</p>
+  <p class="sub-quiz" style="color:#ffcc00; font-style:normal;">Dica: “Óbvio. Mais fácil do que você imagina.”</p>
+  <input type="text" class="campo-gui" id="campoSenha" placeholder="Digite a senha" autocomplete="off">
+  <br>
+  <button class="botao-gui" onclick="conferirSenha()">Confirmar</button>
+  <div class="msg-erro-campo" id="msgSenha"></div>
+</div>
+
+<!-- TELA 9: mensagem -->
+<div class="tela" id="tela-mensagem">
+  <h1 class="titulo-quiz" style="font-size:22px;">Antes de continuar...</h1>
+  <p class="sub-quiz">Isso não é só um questionário genérico. É bem maior do que você pensa. Se quiser, deixe algo aqui — de carinho, de raiva, de arrependimento... o que você sempre quis dizer. É opcional, mas se puder, escreva de coração.</p>
+  <textarea class="campo-msg" id="campoMensagem" placeholder="Escreva aqui a sua mensagem..."></textarea>
+  <br>
+  <button class="botao-gui" onclick="enviarMensagemEContinuar()">Continuar</button>
+</div>
+
+<!-- TELA 9: final -->
+<div class="tela" id="tela-final">
+  <h1 class="titulo-quiz" style="font-size:24px;">Você chegou até aqui.</h1>
+  <p class="sub-quiz">Obrigado por ter vindo até o fim.</p>
+  <button class="botao-gui" id="btnEntrar" onclick="abrirLinkFinal()">Entrar</button>
+</div>
+
+<script>
+(function(){
+  // Gera o captcha "Cl0uDs" desenhado em código, com cores e riscos aleatórios
+  function gerarCaptcha(){
+    var svg = document.getElementById('captchaSvg');
+    var texto = "Cl0uDs";
+    var cores = ["#ff6b6b","#1dd1a1","#feca57","#ffffff","#54a0ff","#ff9f43"];
+    var conteudo = "";
+    var x = 25;
+    texto.split("").forEach(function(letra, i){
+      var cor = cores[i % cores.length];
+      var rot = (Math.random()*24 - 12).toFixed(1);
+      var y = 55 + (Math.random()*10 - 5);
+      conteudo += '<text x="'+x+'" y="'+y+'" font-size="34" class="letra-captcha" fill="'+cor+'" ' +
+        'transform="rotate('+rot+' '+x+' '+y+')" stroke="#04080f" stroke-width="0.6">'+letra+'</text>';
+      if(letra === "0"){
+        // risco diagonal pra deixar claro que é o número zero, não a letra O
+        conteudo += '<line x1="'+(x+2)+'" y1="'+(y-2)+'" x2="'+(x+16)+'" y2="'+(y-24)+'" ' +
+          'stroke="#04080f" stroke-width="2.2" stroke-linecap="round" ' +
+          'transform="rotate('+rot+' '+x+' '+y+')"/>';
+      }
+      x += 36;
+    });
+    // Riscos aleatórios por cima
+    for(var i=0;i<6;i++){
+      var x1=(Math.random()*260).toFixed(0), y1=(Math.random()*90).toFixed(0);
+      var x2=(Math.random()*260).toFixed(0), y2=(Math.random()*90).toFixed(0);
+      var corRisco = ["#ffffff","#ffe66d","#54a0ff"][i%3];
+      conteudo += '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+corRisco+'" stroke-width="1.3" opacity="0.55"/>';
+    }
+    // Pontinhos de "chuva/nuvem" espalhados
+    for(var p=0;p<18;p++){
+      var px=(Math.random()*260).toFixed(0), py=(Math.random()*90).toFixed(0);
+      conteudo += '<circle cx="'+px+'" cy="'+py+'" r="1" fill="#ffffff" opacity="0.3"/>';
+    }
+    svg.innerHTML = conteudo;
+  }
+  gerarCaptcha();
+
+  var nuvem = document.getElementById('nuvemGatilho');
+  var dica = document.getElementById('dicaNuvem');
+
+  // Depois de alguns segundos, sol e robô apagam e a nuvem acorda em neon
+  setTimeout(function(){
+    document.getElementById('solGui').classList.add('apagado');
+    document.getElementById('roboGui').classList.add('apagado');
+    nuvem.classList.add('acordada');
+    dica.classList.add('acordada');
+    dica.innerHTML = "?";
+  }, 4000);
+
+  nuvem.addEventListener('click', function(){
+    if(!nuvem.classList.contains('acordada')) return; // só funciona depois de acordar
+    trocarTela('tela-erro', 'tela-captcha');
+  });
+
+  window.conferirCaptcha = function(){
+    var valor = document.getElementById('campoCaptcha').value.trim();
+    var msg = document.getElementById('msgCaptcha');
+    if(valor === "Cl0uDs"){
+      msg.innerHTML = "";
+      trocarTela('tela-captcha', 'tela-titulo');
+    } else {
+      msg.innerHTML = "Não foi dessa vez, tenta de novo com atenção.";
+    }
+  };
+
+  function trocarTela(saiId, entraId){
+    document.getElementById(saiId).classList.remove('ativa');
+    document.getElementById(entraId).classList.add('ativa');
+  }
+
+  // ===== QUIZ =====
+  var perguntas = [
+    {
+      legenda: "a primeira sempre é fácil... vai piorar",
+      texto: "Qual o ano de nascimento de Gui Moura?",
+      opcoes: ["2003","2000","2002","2001"],
+      hash: "6c94e35ccc352d4e9ef0b99562cff995a5741ce8de8ad11b568892934daee366"
+    },
+    {
+      legenda: "essa também não deve ser difícil",
+      texto: "Qual fenômeno da natureza Gui Moura menos gosta?",
+      opcoes: ["Furacão","Chuva intensa","Terremotos","Calor extremo"],
+      hash: "e2764fd1e0ee01840165ae673100adc0825ec8d1a0586b58da5e41238e910f99"
+    },
+    {
+      legenda: "não disse que ia complicar?",
+      texto: "Como o personagem favorito de Gui Moura sempre diz: “Sempre espere...”",
+      opcoes: ["uma solução!","uma oportunidade!","o inesperado!","a vida sorrir!"],
+      hash: "080f61417e648741a7cb24bdab3724a90c0653ebd46f023274529bea46bffab2"
+    },
+    {
+      legenda: "se prepare... vai ficar PIOR!",
+      texto: "Quais são os álbuns da Ariana Grande FAVORITOS de Guilherme Moura?",
+      opcoes: ["Positions e Dangerous Woman","Sweetener e Eternal Sunshine","My Everything e Sweetener","Todas as alternativas estão corretas"],
+      hash: "4d1a86f4b9e8d32f219240b05dc07912c85cccb64fccfdcea92ea4ca081b0291"
+    },
+    {
+      legenda: "complete a letra",
+      texto: "“E mesmo que o tempo passe, sua essência ainda me invade. De qualquer forma, serei sua metade...”",
+      opcoes: ["Vou te fazer feliz!","Eu vou te trazer, sim!","Vou te trazer pra mim!","Vou te largar, enfim!"],
+      hash: "aa673308c79d602f61f8c9874d89dc1cc9807722a094db365082b6275ce672ec"
+    },
+    {
+      legenda: "pense bem antes de responder, ela é decisiva",
+      texto: "Se Guilherme pudesse deixar um legado para pessoas importantes da vida dele, o que Gui escolheria?",
+      opcoes: ["Um caderno com músicas e textos que ele mesmo escreveu","Uma galeria com fotos importantes ou uma playlist com suas músicas favoritas","Um acervo digital com arquivos únicos","Vídeos de momentos bonitos de sua vida ou uma autobiografia"],
+      hash: "bab1fc0dfe11a5d0aed9bdf2e2aa47826e4d135984e1d2ac5b2f62b354489799"
+    }
+  ];
+
+  var vidas, perguntaAtual, bonusUsado;
+
+  async function sha256(texto){
+    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
+    return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+  }
+
+  window.tentarJogar = function(){
+    var bloqueadoAte = parseInt(localStorage.getItem('gui_bloqueadoAte') || "0");
+    if(Date.now() < bloqueadoAte){
+      trocarTela(document.querySelector('#portaoGui .tela.ativa').id, 'tela-bloqueada');
+      return;
+    }
+    vidas = 3; perguntaAtual = 0; bonusUsado = false;
+    renderVidas();
+    renderPergunta();
+    trocarTela(document.querySelector('#portaoGui .tela.ativa').id, 'tela-quiz');
+  };
+
+  function renderVidas(){
+    var wrap = document.getElementById('vidasWrap');
+    var html = "";
+    for(var i=0;i<3;i++){
+      var perdido = i >= vidas ? " perdido" : "";
+      html += '<svg class="coracao'+perdido+'" viewBox="0 0 32 29" fill="#ff6b6b"><path d="M16,29 C8,22 0,15.5 0,8.5 C0,3.8 3.6,0 8,0 C11,0 13.8,1.7 16,4.5 C18.2,1.7 21,0 24,0 C28.4,0 32,3.8 32,8.5 C32,15.5 24,22 16,29 Z"/></svg>';
+    }
+    wrap.innerHTML = html;
+  }
+
+  function renderPergunta(){
+    var p = perguntas[perguntaAtual];
+    document.getElementById('legendaPergunta').innerHTML = p.legenda;
+    document.getElementById('textoPergunta').innerHTML = p.texto;
+    var wrap = document.getElementById('opcoesWrap');
+    wrap.innerHTML = "";
+    p.opcoes.forEach(function(opcao){
+      var btn = document.createElement('button');
+      btn.className = "opcao-btn";
+      btn.innerHTML = opcao;
+      btn.onclick = function(){ responder(btn, opcao); };
+      wrap.appendChild(btn);
+    });
+    document.getElementById('btnProximo').classList.remove('mostrar');
+  }
+
+  async function responder(btn, opcaoTexto){
+    var p = perguntas[perguntaAtual];
+    var hashTentativa = await sha256(opcaoTexto.trim());
+    if(hashTentativa === p.hash){
+      btn.classList.add('certo');
+      document.querySelectorAll('#opcoesWrap .opcao-btn').forEach(function(b){ b.classList.add('travado'); });
+      document.getElementById('btnProximo').classList.add('mostrar');
+    } else {
+      btn.classList.add('errado');
+      btn.classList.add('travado');
+      vidas--;
+      renderVidas();
+      if(vidas === 1 && !bonusUsado){
+        bonusUsado = true;
+        setTimeout(iniciarBonus, 700);
+      } else if(vidas === 0){
+        setTimeout(fimDeCiclo, 700);
+      }
+    }
+  }
+
+  window.proximaPergunta = function(){
+    perguntaAtual++;
+    if(perguntaAtual < perguntas.length){
+      renderPergunta();
+    } else {
+      trocarTela('tela-quiz', 'tela-senha');
+      senhaTentativas = 3;
+    }
+  };
+
+  function fimDeCiclo(){
+    var telaAtiva = document.querySelector('#portaoGui .tela.ativa').id;
+    var ciclos = parseInt(localStorage.getItem('gui_ciclosFalhos') || "0") + 1;
+    localStorage.setItem('gui_ciclosFalhos', ciclos);
+    if(ciclos >= 3){
+      localStorage.setItem('gui_
