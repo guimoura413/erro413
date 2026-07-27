@@ -7,13 +7,19 @@
 <style>html,body{margin:0;padding:0;background:#04080f;}</style>
 </head>
 <body>
-<div id="detectorErro" style="display:none; position:fixed; top:0; left:0; width:100%; background:#ff0000; color:#fff; font-size:11px; padding:8px; z-index:9999999; font-family:monospace; word-break:break-all;"></div>
+<div id="detectorErro" style="position:fixed; top:0; left:0; width:100%; background:#111; color:#0f0; font-size:10px; padding:6px; z-index:9999999; font-family:monospace; word-break:break-all; max-height:35vh; overflow-y:auto;"></div>
 <script>
-  window.onerror = function(msg, url, linha, coluna, erro){
+  function logDebug(msg){
     var d = document.getElementById('detectorErro');
-    d.style.display = 'block';
-    d.innerHTML = 'ERRO: ' + msg + ' (linha ' + linha + ', coluna ' + coluna + ')';
+    d.innerHTML += msg + '<br>';
+  }
+  window.onerror = function(msg, url, linha, coluna, erro){
+    logDebug('❌ ERRO: ' + msg + ' (linha ' + linha + ')');
   };
+  window.addEventListener('unhandledrejection', function(e){
+    logDebug('❌ PROMISE: ' + e.reason);
+  });
+  logDebug('0. pagina carregou, script comecando');
 </script>
 <div id="portaoGui" style="font-family: sans-serif;">
 
@@ -277,14 +283,14 @@
     }
     svg.innerHTML = conteudo;
   }
-  gerarCaptcha();
+  logDebug('1. antes de gerarCaptcha'); gerarCaptcha(); logDebug('2. depois de gerarCaptcha');
 
-  var nuvem = document.getElementById('nuvemGatilho');
+  logDebug('3. antes de pegar nuvem'); var nuvem = document.getElementById('nuvemGatilho'); logDebug('4. nuvem = ' + (nuvem ? 'ACHOU' : 'NAO ACHOU'));
   var dica = document.getElementById('dicaNuvem');
 
   // Depois de alguns segundos, sol e robô apagam e a nuvem acorda em neon
-  setTimeout(function(){
-    document.getElementById('solGui').classList.add('apagado');
+  logDebug('5. timeout registrado'); setTimeout(function(){
+    logDebug('6. TIMEOUT DISPAROU'); document.getElementById('solGui').classList.add('apagado');
     document.getElementById('roboGui').classList.add('apagado');
     nuvem.classList.add('acordada');
     dica.classList.add('acordada');
@@ -397,13 +403,4 @@
     document.getElementById('btnProximo').classList.remove('mostrar');
   }
 
-  async function responder(btn, opcaoTexto){
-    var p = perguntas[perguntaAtual];
-    var hashTentativa = await sha256(opcaoTexto.trim());
-    if(hashTentativa === p.hash){
-      btn.classList.add('certo');
-      document.querySelectorAll('#opcoesWrap .opcao-btn').forEach(function(b){ b.classList.add('travado'); });
-      document.getElementById('btnProximo').classList.add('mostrar');
-    } else {
-      btn.classList.add('errado');
-      btn.classList.ad
+  async function responder(btn, opc
