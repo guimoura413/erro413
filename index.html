@@ -120,18 +120,26 @@
     <g class="robo">
       <line x1="50" y1="8" x2="44" y2="20" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
       <circle cx="50" cy="8" r="3" fill="#54a0ff"/>
-      <rect x="30" y="20" width="40" height="28" rx="6" stroke="#54a0ff" stroke-width="2.5"/>
-      <line x1="38" y1="30" x2="46" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="46" y1="30" x2="38" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="54" y1="30" x2="62" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="62" y1="30" x2="54" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
+      <rect x="30" y="19" width="40" height="28" rx="6" stroke="#54a0ff" stroke-width="2.5" transform="rotate(-6 50 33)"/>
+      <line x1="38" y1="30" x2="46" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round" transform="rotate(-6 50 33)"/>
+      <line x1="46" y1="30" x2="38" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round" transform="rotate(-6 50 33)"/>
+      <line x1="54" y1="30" x2="62" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round" transform="rotate(-6 50 33)"/>
+      <line x1="62" y1="30" x2="54" y2="38" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round" transform="rotate(-6 50 33)"/>
       <rect x="26" y="52" width="48" height="36" rx="6" stroke="#54a0ff" stroke-width="2.5"/>
       <line x1="34" y1="62" x2="66" y2="62" stroke="#54a0ff" stroke-width="2"/>
       <line x1="34" y1="72" x2="58" y2="72" stroke="#54a0ff" stroke-width="2"/>
-      <line x1="20" y1="95" x2="34" y2="80" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- braço esquerdo, torto e levemente separado do corpo -->
+      <line x1="18" y1="98" x2="33" y2="79" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- braço direito, em ângulo estranho, também separado -->
+      <line x1="84" y1="90" x2="72" y2="72" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="84" y1="90" x2="96" y2="84" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- perna esquerda normal, perna direita levemente deslocada -->
       <line x1="40" y1="88" x2="38" y2="104" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="60" y1="88" x2="62" y2="104" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="63" y1="89" x2="68" y2="106" stroke="#54a0ff" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- peças soltas espalhadas pelo chão -->
       <circle cx="78" cy="100" r="3" stroke="#54a0ff" stroke-width="2"/>
+      <circle cx="10" cy="108" r="2" stroke="#54a0ff" stroke-width="2"/>
+      <line x1="90" y1="105" x2="98" y2="109" stroke="#54a0ff" stroke-width="2" stroke-linecap="round"/>
     </g>
     </g>
 
@@ -207,7 +215,7 @@
 <div class="tela" id="tela-senha">
   <h1 class="titulo-quiz" style="font-size:22px;">Você está muito perto!</h1>
   <p class="sub-quiz">Mas ainda não acabou... Caro conhecedor do Guilherme, qual é a senha?</p>
-  <p class="sub-quiz" style="color:#ffcc00; font-style:normal;">Dica: “Óbvio. Mais fácil do que você imagina.”</p>
+  <p class="sub-quiz" style="color:#ffcc00; font-style:normal;">Dica: “Óbvio. Mais fácil do que você imagina.” Às vezes, é difícil encontrar o seu caminho para as nuvens, mas não desista! Apenas pare, respire e boa sorte!</p>
   <input type="text" class="campo-gui" id="campoSenha" placeholder="Digite a senha" autocomplete="off">
   <br>
   <button class="botao-gui" onclick="conferirSenha()">Confirmar</button>
@@ -237,13 +245,13 @@
   function gerarCaptcha(){
     var svg = document.getElementById('captchaSvg');
     var texto = "Cl0uDs";
-    var cores = ["#ff6b6b","#1dd1a1","#feca57","#ffffff","#54a0ff","#ff9f43"];
+    var cores = ["#ff8787","#3ddc97","#ffd166","#ffffff","#8ecdff","#ffb454"];
     var conteudo = "";
-    var x = 25;
+    var x = 22;
     texto.split("").forEach(function(letra, i){
       var cor = cores[i % cores.length];
-      var rot = (Math.random()*24 - 12).toFixed(1);
-      var y = 55 + (Math.random()*10 - 5);
+      var rot = (Math.random()*12 - 6).toFixed(1);
+      var y = 55 + (Math.random()*6 - 3);
       conteudo += '<text x="'+x+'" y="'+y+'" font-size="34" class="letra-captcha" fill="'+cor+'" ' +
         'transform="rotate('+rot+' '+x+' '+y+')" stroke="#04080f" stroke-width="0.6">'+letra+'</text>';
       if(letra === "0"){
@@ -252,14 +260,13 @@
           'stroke="#04080f" stroke-width="2.2" stroke-linecap="round" ' +
           'transform="rotate('+rot+' '+x+' '+y+')"/>';
       }
-      x += 36;
+      x += 38;
     });
-    // Riscos aleatórios por cima
-    for(var i=0;i<6;i++){
+    // Riscos aleatórios por cima (bem mais discretos agora)
+    for(var i=0;i<3;i++){
       var x1=(Math.random()*260).toFixed(0), y1=(Math.random()*90).toFixed(0);
       var x2=(Math.random()*260).toFixed(0), y2=(Math.random()*90).toFixed(0);
-      var corRisco = ["#ffffff","#ffe66d","#54a0ff"][i%3];
-      conteudo += '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+corRisco+'" stroke-width="1.3" opacity="0.55"/>';
+      conteudo += '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#ffffff" stroke-width="1" opacity="0.25"/>';
     }
     // Pontinhos de "chuva/nuvem" espalhados
     for(var p=0;p<18;p++){
@@ -297,6 +304,35 @@
       msg.innerHTML = "Não foi dessa vez, tenta de novo com atenção.";
     }
   };
+
+  // ===== SONS SINTETIZADOS (sem precisar de nenhum arquivo de áudio) =====
+  var audioCtxGlobal = null;
+  function getAudioCtx(){
+    if(!audioCtxGlobal) audioCtxGlobal = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtxGlobal;
+  }
+  function tocarTom(freq, duracao, tipo){
+    try{
+      var ctx = getAudioCtx();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = tipo || 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.22, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duracao);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duracao);
+    } catch(e){}
+  }
+  function tocarAcerto(){
+    tocarTom(880, 0.15, 'sine');
+    setTimeout(function(){ tocarTom(1318.5, 0.2, 'sine'); }, 100);
+  }
+  function tocarErro(){
+    tocarTom(180, 0.3, 'sawtooth');
+  }
+  var notasBonus = [261.63, 293.66, 329.63, 349.23]; // dó, ré, mi, fá
 
   function trocarTela(saiId, entraId){
     document.getElementById(saiId).classList.remove('ativa');
@@ -392,10 +428,12 @@
     var p = perguntas[perguntaAtual];
     var hashTentativa = await sha256(opcaoTexto.trim());
     if(hashTentativa === p.hash){
+      tocarAcerto();
       btn.classList.add('certo');
       document.querySelectorAll('#opcoesWrap .opcao-btn').forEach(function(b){ b.classList.add('travado'); });
       document.getElementById('btnProximo').classList.add('mostrar');
     } else {
+      tocarErro();
       btn.classList.add('errado');
       btn.classList.add('travado');
       vidas--;
@@ -452,6 +490,7 @@
     document.getElementById('instrucaoBonus').innerHTML = "Observe a sequência...";
 
     function piscar(idx, cb){
+      tocarTom(notasBonus[idx], 0.35, 'triangle');
       nuvens[idx].classList.add('piscando');
       setTimeout(function(){
         nuvens[idx].classList.remove('piscando');
@@ -496,9 +535,11 @@
     var msg = document.getElementById('msgSenha');
     var hashTentativa = await sha256(valor);
     if(hashTentativa === "538dcf3c79119744e6439b3cd09ce0bd65408e3ffb679bf9d978137ad55fbf39"){
+      tocarAcerto();
       msg.innerHTML = "";
       trocarTela('tela-senha', 'tela-mensagem');
     } else {
+      tocarErro();
       senhaTentativas--;
       if(senhaTentativas <= 0){
         setTimeout(fimDeCiclo, 500);
